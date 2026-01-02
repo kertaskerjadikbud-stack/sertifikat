@@ -6,8 +6,6 @@
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Custom CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -15,11 +13,19 @@
 
 <div class="max-w-7xl mx-auto bg-white shadow-lg rounded-lg p-6">
 
-  <h2 class="text-2xl font-bold text-blue-600 mb-4">
-    📄 Data Sertifikat Gedung Sekolah
-  </h2>
+  <!-- HEADER -->
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-bold text-blue-600">
+      📄 Data Sertifikat Gedung Sekolah
+    </h2>
 
-  <!-- FILTER -->
+    <button onclick="logout()"
+      class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+      ⎋ Keluar
+    </button>
+  </div>
+
+  <!-- FILTER & SEARCH -->
   <div class="flex flex-wrap gap-3 mb-4">
     <select id="sheet" class="select">
       <option>SD NEGERI</option>
@@ -29,6 +35,11 @@
     <select id="kecamatan" class="select">
       <option value="">Semua Kecamatan</option>
     </select>
+
+    <input id="search"
+      type="text"
+      placeholder="🔍 Cari nama / NPSN / kecamatan..."
+      class="border border-gray-300 rounded px-3 py-2 w-64 focus:ring focus:ring-blue-300">
   </div>
 
   <!-- TABLE -->
