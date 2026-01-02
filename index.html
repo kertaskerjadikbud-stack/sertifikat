@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sertifikat Gedung</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>Data Sertifikat Gedung Sekolah</h2>
+
+<select id="sheet">
+  <option>SD NEGERI</option>
+  <option>SMP NEGERI</option>
+</select>
+
+<select id="kecamatan"></select>
+
+<input type="file" id="file">
+<button id="uploadBtn" onclick="upload()">Upload</button>
+
+<table>
+<thead>
+<tr>
+<th>No</th><th>NPSN</th><th>Nama</th><th>Kecamatan</th><th>Sertifikat</th>
+</tr>
+</thead>
+<tbody id="tb"></tbody>
+</table>
+
+<div id="modal">
+  <iframe id="viewer"></iframe>
+  <a id="dl" download>⬇ Download</a>
+  <button onclick="closeModal()">Tutup</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
