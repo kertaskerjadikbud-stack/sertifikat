@@ -1,14 +1,23 @@
-const API = "https://script.google.com/macros/s/AKfycbxHyp9rOZMTjIDIwu919iGWjQz8ujaZOfvugq8gtGXzWXKa0oOs3MJ8pRM3rI1-JAmm/exec";
+const API = "https://script.google.com/macros/s/AKfycbyC955zuE7-zS7q_5QIg0SCAb4vGt5rtdMEEOk3pCM_HR2f9OmGBV3W-k9Z7N7v792C/exec";
 let allData = [];
-let selectedRow = null;
+
+// CEK LOGIN
+if (!localStorage.getItem("role")) {
+  location.href = "login.html";
+}
+
+function logout() {
+  localStorage.clear();
+  location.href = "login.html";
+}
 
 function load() {
   fetch(API + "?sheet=" + sheet.value)
     .then(r => r.json())
     .then(d => {
       allData = d;
-      renderTable(d);
       populateKecamatan(d);
+      renderTable(d);
     });
 }
 
@@ -19,70 +28,59 @@ function populateKecamatan(d) {
   });
 }
 
-function renderTable(d) {
+function renderTable(data) {
   tb.innerHTML = "";
-  d.forEach((x, i) => {
+  data.forEach((x, i) => {
     tb.innerHTML += `
       <tr class="hover:bg-gray-50">
         <td class="td">${x.No}</td>
         <td class="td">${x.NPSN}</td>
         <td class="td font-medium">${x["Nama Satuan Pendidikan"]}</td>
         <td class="td">${x.Kecamatan}</td>
-
         <td class="td">
-          <input type="file"
-                 class="text-xs"
-                 onchange="uploadFile(this, ${i})">
+          <input type="file" class="text-xs" onchange="uploadFile(this, ${i})">
         </td>
-
         <td class="td text-center">
           ${x.Sertifikat
-            ? `<button onclick="openPDF('${x.Sertifikat}')"
-                class="btn-view">👁 Lihat</button>`
+            ? `<button onclick="openPDF('${x.Sertifikat}')" class="btn-view">👁 Lihat</button>`
             : `<span class="text-gray-400 italic">Belum ada</span>`
           }
         </td>
-      </tr>
-    `;
+      </tr>`;
   });
 }
 
-kecamatan.onchange = () => {
-  renderTable(
-    kecamatan.value
-      ? allData.filter(x => x.Kecamatan === kecamatan.value)
-      : allData
-  );
-};
-
+/* =====================
+   FILTER KECAMATAN
+===================== */
+kecamatan.onchange = () => applyFilter();
 sheet.onchange = load;
 
-function uploadFile(input, index) {
-  const file = input.files[0];
-  if (!file) return;
+/* =====================
+   SEARCH
+===================== */
+search.onkeyup = () => applyFilter();
 
-  const reader = new FileReader();
-  reader.onload = () => {
-    fetch(API, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "upload",
-        base64: reader.result.split(",")[1],
-        name: file.name,
-        mimeType: file.type,
-        rowIndex: index,
-        sheet: sheet.value
-      })
-    })
-    .then(r => r.json())
-    .then(res => {
-      alert("Upload berhasil");
-      load();
-    });
-  };
-  reader.readAsDataURL(file);
+function applyFilter() {
+  const key = search.value.toLowerCase();
+  const kec = kecamatan.value;
+
+  let filtered = allData.filter(d => {
+    const text =
+      `${d.NPSN} ${d["Nama Satuan Pendidikan"]} ${d.Kecamatan}`.toLowerCase();
+
+    const matchSearch = text.includes(key);
+    const matchKec = kec ? d.Kecamatan === kec : true;
+
+    return matchSearch && matchKec;
+  });
+
+  renderTable(filtered);
 }
 
+/* =====================
+   MODAL
+===================== */
 function openPDF(url) {
   modal.style.display = "flex";
   viewer.src = url;
