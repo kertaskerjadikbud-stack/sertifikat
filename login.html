@@ -1,17 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <title>Login</title>
+  <meta charset="UTF-8">
+  <title>Login | Sistem Sertifikat Gedung</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
 
-<h3>Login Sistem Sertifikat</h3>
+<body class="min-h-screen bg-gradient-to-br from-blue-700 to-blue-900 flex items-center justify-center">
 
-<input id="u" placeholder="Username">
-<input id="p" type="password" placeholder="Password">
-<button onclick="login()">Login</button>
+  <div class="w-full max-w-md bg-white rounded-xl shadow-2xl p-8">
 
-<script src="login.js"></script>
+    <!-- LOGO -->
+    <div class="flex flex-col items-center mb-6">
+      <img src="logo.png" alt="Logo" class="w-20 mb-3">
+      <h1 class="text-xl font-bold text-blue-700">
+        Sistem Sertifikat Gedung
+      </h1>
+      <p class="text-sm text-gray-500">
+        Dinas Pendidikan
+      </p>
+    </div>
+
+    <!-- FORM -->
+    <div class="space-y-4">
+      <div>
+        <label class="label">Username</label>
+        <input id="u" type="text" class="input" placeholder="Masukkan username">
+      </div>
+
+      <div>
+        <label class="label">Password</label>
+        <input id="p" type="password" class="input" placeholder="Masukkan password">
+      </div>
+
+      <button onclick="login()"
+        class="w-full bg-blue-700 hover:bg-blue-800 text-white py-2 rounded-lg font-semibold transition">
+        🔐 Masuk
+      </button>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="text-center mt-6 text-xs text-gray-400">
+      © 2025 Dinas Pendidikan · Sistem Informasi
+    </div>
+
+  </div>
+
+  <script src="login.js"></script>
 </body>
 </html>
