@@ -1,36 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <title>Sertifikat Gedung</title>
+  <meta charset="UTF-8">
+  <title>Sertifikat Gedung Sekolah</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
 
-<h2>Data Sertifikat Gedung Sekolah</h2>
+<body class="bg-gray-100 p-6">
 
-<select id="sheet">
-  <option>SD NEGERI</option>
-  <option>SMP NEGERI</option>
-</select>
+<div class="max-w-7xl mx-auto bg-white shadow-lg rounded-lg p-6">
 
-<select id="kecamatan"></select>
+  <h2 class="text-2xl font-bold text-blue-600 mb-4">
+    📄 Data Sertifikat Gedung Sekolah
+  </h2>
 
-<input type="file" id="file">
-<button id="uploadBtn" onclick="upload()">Upload</button>
+  <!-- FILTER -->
+  <div class="flex flex-wrap gap-3 mb-4">
+    <select id="sheet" class="select">
+      <option>SD NEGERI</option>
+      <option>SMP NEGERI</option>
+    </select>
 
-<table>
-<thead>
-<tr>
-<th>No</th><th>NPSN</th><th>Nama</th><th>Kecamatan</th><th>Sertifikat</th>
-</tr>
-</thead>
-<tbody id="tb"></tbody>
-</table>
+    <select id="kecamatan" class="select">
+      <option value="">Semua Kecamatan</option>
+    </select>
+  </div>
 
-<div id="modal">
-  <iframe id="viewer"></iframe>
-  <a id="dl" download>⬇ Download</a>
-  <button onclick="closeModal()">Tutup</button>
+  <!-- TABLE -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full border border-gray-200 text-sm">
+      <thead class="bg-blue-600 text-white">
+        <tr>
+          <th class="th">No</th>
+          <th class="th">NPSN</th>
+          <th class="th">Nama Sekolah</th>
+          <th class="th">Kecamatan</th>
+          <th class="th">Upload</th>
+          <th class="th">Sertifikat</th>
+        </tr>
+      </thead>
+      <tbody id="tb" class="divide-y"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- MODAL PREVIEW -->
+<div id="modal" class="modal">
+  <div class="modal-box">
+    <div class="flex justify-between items-center mb-2">
+      <h3 class="font-bold text-lg">Preview Sertifikat</h3>
+      <button onclick="closeModal()" class="text-red-500 font-bold">✖</button>
+    </div>
+    <iframe id="viewer" class="w-full h-[75vh] border"></iframe>
+    <a id="dl"
+       class="mt-3 inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+       download>
+       ⬇ Download Sertifikat
+    </a>
+  </div>
 </div>
 
 <script src="script.js"></script>
