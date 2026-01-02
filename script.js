@@ -1,64 +1,97 @@
 const API = "https://script.google.com/macros/s/AKfycbw7-vWFlZODc1bsZSHrmZmF-0XIRQRuFi-C7jFNNiYJQpJG6cjpuv6Q1g9j_G_XV2QU/exec";
-let dataAll=[];
+let allData = [];
+let selectedRow = null;
 
-const role = localStorage.getItem("role");
-if(!role) location.href="login.html";
-if(role==="viewer") uploadBtn.style.display="none";
-
-function load(){
-  fetch(API+"?sheet="+sheet.value)
-    .then(r=>r.json())
-    .then(d=>{
-      dataAll=d;
-      kecamatan.innerHTML='<option value="">Semua</option>';
-      [...new Set(d.map(x=>x.Kecamatan))].forEach(k=>{
-        if(k) kecamatan.innerHTML+=`<option>${k}</option>`;
-      });
-      render(d);
+function load() {
+  fetch(API + "?sheet=" + sheet.value)
+    .then(r => r.json())
+    .then(d => {
+      allData = d;
+      renderTable(d);
+      populateKecamatan(d);
     });
 }
 
-function render(d){
-  tb.innerHTML="";
-  d.forEach(x=>{
-    tb.innerHTML+=`
-    <tr>
-      <td>${x.No}</td>
-      <td>${x.NPSN}</td>
-      <td>${x["Nama Satuan Pendidikan"]}</td>
-      <td>${x.Kecamatan}</td>
-      <td>${x.Sertifikat?`<button onclick="openPDF('${x.Sertifikat}')">👁</button>`:""}</td>
-    </tr>`;
+function populateKecamatan(d) {
+  kecamatan.innerHTML = '<option value="">Semua Kecamatan</option>';
+  [...new Set(d.map(x => x.Kecamatan))].forEach(k => {
+    if (k) kecamatan.innerHTML += `<option>${k}</option>`;
   });
 }
 
-kecamatan.onchange=()=>{
-  render(kecamatan.value?dataAll.filter(x=>x.Kecamatan===kecamatan.value):dataAll);
+function renderTable(d) {
+  tb.innerHTML = "";
+  d.forEach((x, i) => {
+    tb.innerHTML += `
+      <tr class="hover:bg-gray-50">
+        <td class="td">${x.No}</td>
+        <td class="td">${x.NPSN}</td>
+        <td class="td font-medium">${x["Nama Satuan Pendidikan"]}</td>
+        <td class="td">${x.Kecamatan}</td>
+
+        <td class="td">
+          <input type="file"
+                 class="text-xs"
+                 onchange="uploadFile(this, ${i})">
+        </td>
+
+        <td class="td text-center">
+          ${x.Sertifikat
+            ? `<button onclick="openPDF('${x.Sertifikat}')"
+                class="btn-view">👁 Lihat</button>`
+            : `<span class="text-gray-400 italic">Belum ada</span>`
+          }
+        </td>
+      </tr>
+    `;
+  });
+}
+
+kecamatan.onchange = () => {
+  renderTable(
+    kecamatan.value
+      ? allData.filter(x => x.Kecamatan === kecamatan.value)
+      : allData
+  );
 };
 
-function openPDF(url){
-  modal.style.display="block";
-  viewer.src=url;
-  dl.href=url;
-}
-function closeModal(){ modal.style.display="none"; }
+sheet.onchange = load;
 
-function upload(){
-  const f=file.files[0];
-  const r=new FileReader();
-  r.onload=()=>{
-    fetch(API,{
-      method:"POST",
-      body:JSON.stringify({
-        action:"upload",
-        base64:r.result.split(",")[1],
-        name:f.name,
-        mimeType:f.type
+function uploadFile(input, index) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    fetch(API, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "upload",
+        base64: reader.result.split(",")[1],
+        name: file.name,
+        mimeType: file.type,
+        rowIndex: index,
+        sheet: sheet.value
       })
-    }).then(res=>res.json()).then(d=>alert("Uploaded"));
+    })
+    .then(r => r.json())
+    .then(res => {
+      alert("Upload berhasil");
+      load();
+    });
   };
-  r.readAsDataURL(f);
+  reader.readAsDataURL(file);
 }
 
-sheet.onchange=load;
+function openPDF(url) {
+  modal.style.display = "flex";
+  viewer.src = url;
+  dl.href = url;
+}
+
+function closeModal() {
+  modal.style.display = "none";
+  viewer.src = "";
+}
+
 load();
