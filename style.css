@@ -1,0 +1,5 @@
+body{font-family:Arial;padding:20px}
+table{border-collapse:collapse;width:100%}
+th,td{border:1px solid #ccc;padding:6px}
+#modal{display:none;position:fixed;inset:0;background:#0008}
+iframe{width:90%;height:80%;margin:5%}
